@@ -10,6 +10,7 @@ import { SessionManager } from 'sip.js/lib/platform/web/session-manager/session-
 import { SessionManagerOptions } from 'sip.js/lib/platform/web/session-manager/session-manager-options.js';
 import { OnTopSipDelegate } from './client-delegate.js';
 import { OnTopSipClientOptions, OnTopSipOptions } from './client-options.js';
+import { IOnTopSip } from './types';
 
 /**
  * A simple SIP class with some bits of extended functionality.
@@ -20,7 +21,7 @@ import { OnTopSipClientOptions, OnTopSipOptions } from './client-options.js';
  * it is, however, intended to serve as a simple example of using the SIP.js API.
  * @public
  */
-export class OnTopSip {
+export abstract class OnTopSip implements IOnTopSip {
   /** Delegate. */
   public delegate: OnTopSipDelegate | undefined;
 
@@ -33,7 +34,7 @@ export class OnTopSip {
    * Constructs a new instance of the `OnTopSip` class.
    * @param clientOptions - Options bucket. See {@link OnTopSipClientOptions} for details.
    */
-  constructor(clientOptions: OnTopSipClientOptions) {
+  protected constructor(clientOptions: OnTopSipClientOptions) {
     // Delegate
     this.delegate = clientOptions.options.delegate;
 
