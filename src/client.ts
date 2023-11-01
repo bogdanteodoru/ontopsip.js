@@ -21,7 +21,7 @@ import { IOnTopSip } from './types';
  * it is, however, intended to serve as a simple example of using the SIP.js API.
  * @public
  */
-export abstract class OnTopSip implements IOnTopSip {
+export class OnTopSip implements IOnTopSip {
   /** Delegate. */
   public delegate: OnTopSipDelegate | undefined;
 
