@@ -1,6 +1,6 @@
-import { RegistererOptions } from "sip.js/lib/api/registerer-options.js";
-import { UserAgentOptions } from "sip.js/lib/api/user-agent-options.js";
-import { OnTopSipDelegate } from "./client-delegate.js";
+import { RegistererOptions } from 'sip.js/lib/api/registerer-options.js';
+import { UserAgentOptions } from 'sip.js/lib/api/user-agent-options.js';
+import { OnTopSipDelegate } from './client-delegate.js';
 
 /**
  * Media for {@link OnTopSipOptions}.

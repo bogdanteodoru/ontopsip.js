@@ -1,5 +1,3 @@
-export interface IClientOptions {}
-
 export type MediaDeviceId = string | undefined;
 
 export interface IMediaDevice {

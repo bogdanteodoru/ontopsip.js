@@ -1,15 +1,15 @@
-import { InvitationAcceptOptions } from "sip.js/lib/api/invitation-accept-options.js";
-import { InviterInviteOptions } from "sip.js/lib/api/inviter-invite-options.js";
-import { InviterOptions } from "sip.js/lib/api/inviter-options.js";
-import { Logger } from "sip.js/lib/core/log/logger.js";
-import { Message } from "sip.js/lib/api/message.js";
-import { RegistererRegisterOptions } from "sip.js/lib/api/registerer-register-options.js";
-import { RegistererUnregisterOptions } from "sip.js/lib/api/registerer-unregister-options.js";
-import { Session } from "sip.js/lib/api/session.js";
-import { SessionManager } from "sip.js/lib/platform/web/session-manager/session-manager.js";
-import { SessionManagerOptions } from "sip.js/lib/platform/web/session-manager/session-manager-options.js";
-import { OnTopSipDelegate } from "./client-delegate.js";
-import { OnTopSipOptions } from "./client-options.js";
+import { InvitationAcceptOptions } from 'sip.js/lib/api/invitation-accept-options.js';
+import { InviterInviteOptions } from 'sip.js/lib/api/inviter-invite-options.js';
+import { InviterOptions } from 'sip.js/lib/api/inviter-options.js';
+import { Logger } from 'sip.js/lib/core/log/logger.js';
+import { Message } from 'sip.js/lib/api/message.js';
+import { RegistererRegisterOptions } from 'sip.js/lib/api/registerer-register-options.js';
+import { RegistererUnregisterOptions } from 'sip.js/lib/api/registerer-unregister-options.js';
+import { Session } from 'sip.js/lib/api/session.js';
+import { SessionManager } from 'sip.js/lib/platform/web/session-manager/session-manager.js';
+import { SessionManagerOptions } from 'sip.js/lib/platform/web/session-manager/session-manager-options.js';
+import { OnTopSipDelegate } from './client-delegate.js';
+import { OnTopSipOptions } from './client-options.js';
 
 /**
  * A simple SIP class with some bits of extended functionality.
@@ -56,8 +56,10 @@ export class OnTopSip {
           this.delegate?.onCallHangup && this.delegate?.onCallHangup();
         },
         onCallHold: (s: Session, held: boolean) => this.delegate?.onCallHold?.(held),
-        onCallDTMFReceived: (s: Session, tone: string, dur: number) => this.delegate?.onCallDTMFReceived?.(tone, dur),
-        onMessageReceived: (message: Message) => this.delegate?.onMessageReceived?.(message.request.body),
+        onCallDTMFReceived: (s: Session, tone: string, dur: number) =>
+          this.delegate?.onCallDTMFReceived?.(tone, dur),
+        onMessageReceived: (message: Message) =>
+          this.delegate?.onMessageReceived?.(message.request.body),
         onRegistered: () => this.delegate?.onRegistered?.(),
         onUnregistered: () => this.delegate?.onUnregistered?.(),
         onServerConnect: () => this.delegate?.onServerConnect?.(),
@@ -75,7 +77,7 @@ export class OnTopSip {
     this.sessionManager = new SessionManager(server, sessionManagerOptions);
 
     // Use the SIP.js logger
-    this.logger = this.sessionManager.userAgent.getLogger("sip.OnTopSip");
+    this.logger = this.sessionManager.userAgent.getLogger('sip.OnTopSip');
   }
 
   /**
@@ -83,7 +85,9 @@ export class OnTopSip {
    * @internal
    */
   get id(): string {
-    return (this.options.userAgentOptions && this.options.userAgentOptions.displayName) || "Anonymous";
+    return (
+      (this.options.userAgentOptions && this.options.userAgentOptions.displayName) || 'Anonymous'
+    );
   }
 
   /** The local media stream. Undefined if call not answered. */
@@ -194,7 +198,7 @@ export class OnTopSip {
   ): Promise<void> {
     this.logger.log(`[${this.id}] Beginning Session...`);
     if (this.session) {
-      return Promise.reject(new Error("Session already exists."));
+      return Promise.reject(new Error('Session already exists.'));
     }
     return this.sessionManager.call(destination, inviterOptions, inviterInviteOptions).then(() => {
       return;
@@ -211,7 +215,7 @@ export class OnTopSip {
   public hangup(): Promise<void> {
     this.logger.log(`[${this.id}] Hangup...`);
     if (!this.session) {
-      return Promise.reject(new Error("Session does not exist."));
+      return Promise.reject(new Error('Session does not exist.'));
     }
     return this.sessionManager.hangup(this.session).then(() => {
       this.session = undefined;
@@ -229,7 +233,7 @@ export class OnTopSip {
   public answer(invitationAcceptOptions?: InvitationAcceptOptions): Promise<void> {
     this.logger.log(`[${this.id}] Accepting Invitation...`);
     if (!this.session) {
-      return Promise.reject(new Error("Session does not exist."));
+      return Promise.reject(new Error('Session does not exist.'));
     }
     return this.sessionManager.answer(this.session, invitationAcceptOptions);
   }
@@ -244,7 +248,7 @@ export class OnTopSip {
   public decline(): Promise<void> {
     this.logger.log(`[${this.id}] rejecting Invitation...`);
     if (!this.session) {
-      return Promise.reject(new Error("Session does not exist."));
+      return Promise.reject(new Error('Session does not exist.'));
     }
     return this.sessionManager.decline(this.session);
   }
@@ -260,7 +264,7 @@ export class OnTopSip {
   public hold(): Promise<void> {
     this.logger.log(`[${this.id}] holding session...`);
     if (!this.session) {
-      return Promise.reject(new Error("Session does not exist."));
+      return Promise.reject(new Error('Session does not exist.'));
     }
     return this.sessionManager.hold(this.session);
   }
@@ -276,7 +280,7 @@ export class OnTopSip {
   public unhold(): Promise<void> {
     this.logger.log(`[${this.id}] unholding session...`);
     if (!this.session) {
-      return Promise.reject(new Error("Session does not exist."));
+      return Promise.reject(new Error('Session does not exist.'));
     }
     return this.sessionManager.unhold(this.session);
   }
@@ -328,7 +332,7 @@ export class OnTopSip {
   public sendDTMF(tone: string): Promise<void> {
     this.logger.log(`[${this.id}] sending DTMF...`);
     if (!this.session) {
-      return Promise.reject(new Error("Session does not exist."));
+      return Promise.reject(new Error('Session does not exist.'));
     }
     return this.sessionManager.sendDTMF(this.session, tone);
   }
