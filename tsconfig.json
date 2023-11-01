@@ -3,14 +3,14 @@
     "target": "es2019",
     "moduleResolution": "node",
     "outDir": "build/",
-    "baseUrl": ".",
+    "declaration": true
   },
   "include": [
     "src"
   ],
   "typedocOptions": {
     "mode": "file",
-    "name": "Webphone Lib",
+    "name": "OnTopSip.js",
     "excludeNotExported": true,
     "excludePrivate": true
   }
