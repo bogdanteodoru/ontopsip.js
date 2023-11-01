@@ -9,7 +9,7 @@ import { Session } from 'sip.js/lib/api/session.js';
 import { SessionManager } from 'sip.js/lib/platform/web/session-manager/session-manager.js';
 import { SessionManagerOptions } from 'sip.js/lib/platform/web/session-manager/session-manager-options.js';
 import { OnTopSipDelegate } from './client-delegate.js';
-import { OnTopSipOptions } from './client-options.js';
+import { OnTopSipClientOptions, OnTopSipOptions } from './client-options.js';
 
 /**
  * A simple SIP class with some bits of extended functionality.
@@ -31,15 +31,14 @@ export class OnTopSip {
 
   /**
    * Constructs a new instance of the `OnTopSip` class.
-   * @param server - SIP WebSocket Server URL.
-   * @param options - Options bucket. See {@link OnTopSipOptions} for details.
+   * @param clientOptions - Options bucket. See {@link OnTopSipClientOptions} for details.
    */
-  constructor(server: string, options: OnTopSipOptions = {}) {
+  constructor(clientOptions: OnTopSipClientOptions) {
     // Delegate
-    this.delegate = options.delegate;
+    this.delegate = clientOptions.options.delegate;
 
     // Copy options
-    this.options = { ...options };
+    this.options = { ...clientOptions.options };
 
     // Session manager options
     const sessionManagerOptions: SessionManagerOptions = {
@@ -74,7 +73,7 @@ export class OnTopSip {
       userAgentOptions: this.options.userAgentOptions
     };
 
-    this.sessionManager = new SessionManager(server, sessionManagerOptions);
+    this.sessionManager = new SessionManager(clientOptions.wssURL, sessionManagerOptions);
 
     // Use the SIP.js logger
     this.logger = this.sessionManager.userAgent.getLogger('sip.OnTopSip');

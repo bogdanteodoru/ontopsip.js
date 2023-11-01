@@ -55,10 +55,6 @@ export interface OnTopSipMediaRemote {
   video?: HTMLVideoElement;
 }
 
-/**
- * Options for {@link OnTopSip}.
- * @public
- */
 export interface OnTopSipOptions {
   /**
    * User's SIP Address of Record (AOR).
@@ -111,4 +107,13 @@ export interface OnTopSipOptions {
    * Options for UserAgent.
    */
   userAgentOptions?: UserAgentOptions;
+}
+
+/**
+ * Options for {@link OnTopSip}.
+ * @public
+ */
+export interface OnTopSipClientOptions {
+  wssURL: string;
+  options: OnTopSipOptions;
 }
