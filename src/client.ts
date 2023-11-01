@@ -34,7 +34,7 @@ export class OnTopSip implements IOnTopSip {
    * Constructs a new instance of the `OnTopSip` class.
    * @param clientOptions - Options bucket. See {@link OnTopSipClientOptions} for details.
    */
-  protected constructor(clientOptions: OnTopSipClientOptions) {
+  constructor(clientOptions: OnTopSipClientOptions) {
     // Delegate
     this.delegate = clientOptions.options.delegate;
 
