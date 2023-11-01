@@ -1,2 +1,14 @@
 node_modules
-yarn.lock
+.DS_Store
+.cache
+build
+dist
+docs
+.env
+screenshots/**
+demo/config.mjs
+.dir-locals.el
+.nyc_output
+coverage
+# IDE specific files
+.idea/

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "moduleResolution": "node",
+    "outDir": "build/",
+    "baseUrl": ".",
+  },
+  "include": [
+    "src"
+  ],
+  "typedocOptions": {
+    "mode": "file",
+    "name": "Webphone Lib",
+    "excludeNotExported": true,
+    "excludePrivate": true
+  }
+}
