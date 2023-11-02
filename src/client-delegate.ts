@@ -1,3 +1,5 @@
+import { Invitation } from 'sip.js';
+
 /**
  * Delegate for {@link OnTopSip}.
  * @public
@@ -23,7 +25,7 @@ export interface OnTopSipDelegate {
    * Callback for handling incoming INVITE requests.
    * The callback must either accept or reject the incoming call by calling `answer()` or `decline()` respectively.
    */
-  onCallReceived?(): void;
+  onCallReceived?(invitation: Invitation): void;
 
   /**
    * Called when a call is hung up.

@@ -11,6 +11,7 @@ import { SessionManagerOptions } from 'sip.js/lib/platform/web/session-manager/s
 import { OnTopSipDelegate } from './client-delegate.js';
 import { OnTopSipClientOptions, OnTopSipOptions } from './client-options.js';
 import { IOnTopSip } from './types';
+import { Invitation } from 'sip.js';
 
 /**
  * A simple SIP class with some bits of extended functionality.
@@ -50,7 +51,7 @@ export class OnTopSip implements IOnTopSip {
           this.session = session;
           this.delegate?.onCallCreated?.();
         },
-        onCallReceived: () => this.delegate?.onCallReceived?.(),
+        onCallReceived: (invitation: Invitation) => this.delegate?.onCallReceived?.(invitation),
         onCallHangup: () => {
           this.session = undefined;
           this.delegate?.onCallHangup && this.delegate?.onCallHangup();
