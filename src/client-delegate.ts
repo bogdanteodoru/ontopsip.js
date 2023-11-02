@@ -1,5 +1,4 @@
 import { Invitation } from 'sip.js';
-import { Session } from 'sip.js/lib/api/session.js';
 
 /**
  * Delegate for {@link OnTopSip}.
@@ -33,7 +32,7 @@ export interface OnTopSipDelegate {
    * @remarks
    * Callback for handling termination of a Session.
    */
-  onCallHangup?(session: Session): void;
+  onCallHangup?(invitation: Invitation): void;
 
   /**
    * Called when a call is put on hold or taken off hold.
