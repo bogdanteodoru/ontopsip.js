@@ -52,9 +52,9 @@ export class OnTopSip implements IOnTopSip {
           this.delegate?.onCallCreated?.();
         },
         onCallReceived: (invitation: Invitation) => this.delegate?.onCallReceived?.(invitation),
-        onCallHangup: () => {
+        onCallHangup: (session: Session) => {
           this.session = undefined;
-          this.delegate?.onCallHangup && this.delegate?.onCallHangup();
+          this.delegate?.onCallHangup && this.delegate?.onCallHangup(session);
         },
         onCallHold: (s: Session, held: boolean) => this.delegate?.onCallHold?.(held),
         onCallDTMFReceived: (s: Session, tone: string, dur: number) =>
