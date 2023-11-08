@@ -66,7 +66,7 @@ export class OnTopSip implements IOnTopSip {
         onServerConnect: () => this.delegate?.onServerConnect?.(),
         onServerDisconnect: () => this.delegate?.onServerDisconnect?.()
       },
-      maxSimultaneousSessions: 1,
+      maxSimultaneousSessions: this.options.maxSimultaneousSessions || 1,
       media: this.options.media,
       reconnectionAttempts: this.options.reconnectionAttempts,
       reconnectionDelay: this.options.reconnectionDelay,

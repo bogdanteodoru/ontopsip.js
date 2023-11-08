@@ -107,6 +107,12 @@ export interface OnTopSipOptions {
    * Options for UserAgent.
    */
   userAgentOptions?: UserAgentOptions;
+
+  /**
+   * Number of simultaneous sessions
+   * @defaultValue 1
+   */
+  maxSimultaneousSessions?: number;
 }
 
 /**
