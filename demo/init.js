@@ -27,7 +27,7 @@ import {OnTopSip} from "../dist/index.mjs";
   };
   const buildCallIncoming = (managedSession) => {
     const id = managedSession.session.id;
-    return `<div class="card">
+    return `<div class="card mt-3">
       <div class="card-header">Incoming from: ${getCallerId(managedSession).name}</div>
       <div class="card-body">
         <button class="btn btn-success answer-call" data-sessionId="${id}">Answear</button>
@@ -37,7 +37,7 @@ import {OnTopSip} from "../dist/index.mjs";
   };
   const buildCallActive = (managedSession) => {
     const id = managedSession.session.id;
-    return `<div class="card">
+    return `<div class="card mt-3">
       <div class="card-header">CallerID: ${getCallerId(managedSession).name}</div>
       <div class="card-body">
         <div class="mb-3">
