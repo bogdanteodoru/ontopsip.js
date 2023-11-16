@@ -11,7 +11,8 @@ import { SessionManagerOptions } from 'sip.js/lib/platform/web/session-manager/s
 import { OnTopSipDelegate } from './client-delegate.js';
 import { OnTopSipClientOptions, OnTopSipOptions } from './client-options.js';
 import { IOnTopSip } from './types';
-import { Invitation } from 'sip.js';
+import { Invitation, Inviter } from 'sip.js';
+import { ManagedSession } from 'sip.js/lib/platform/web/session-manager/managed-session';
 
 /**
  * A simple SIP class with some bits of extended functionality.
@@ -29,7 +30,7 @@ export class OnTopSip implements IOnTopSip {
   private logger: Logger;
   private options: OnTopSipOptions;
   private session: Session | undefined = undefined;
-  private sessionManager: SessionManager;
+  private readonly sessionManager: SessionManager;
 
   /**
    * Constructs a new instance of the `OnTopSip` class.
@@ -45,11 +46,12 @@ export class OnTopSip implements IOnTopSip {
     // Session manager options
     const sessionManagerOptions: SessionManagerOptions = {
       aor: this.options.aor,
+      autoStop: this.options.autoStop !== undefined ? this.options.autoStop : true,
       delegate: {
-        onCallAnswered: () => this.delegate?.onCallAnswered?.(),
-        onCallCreated: (session: Session) => {
-          this.session = session;
-          this.delegate?.onCallCreated?.();
+        onCallAnswered: (session: Session) => this.delegate?.onCallAnswered?.(session),
+        onCallCreated: (invitation: Invitation) => {
+          this.session = invitation;
+          this.delegate?.onCallCreated?.(invitation);
         },
         onCallReceived: (invitation: Invitation) => this.delegate?.onCallReceived?.(invitation),
         onCallHangup: (invitation: Invitation) => {
@@ -68,7 +70,7 @@ export class OnTopSip implements IOnTopSip {
       },
       maxSimultaneousSessions: this.options.maxSimultaneousSessions || 1,
       media: this.options.media,
-      reconnectionAttempts: this.options.reconnectionAttempts,
+      reconnectionAttempts: this.options.reconnectionAttempts || 3,
       reconnectionDelay: this.options.reconnectionDelay,
       registererOptions: this.options.registererOptions,
       sendDTMFUsingSessionDescriptionHandler: this.options.sendDTMFUsingSessionDescriptionHandler,
@@ -99,38 +101,6 @@ export class OnTopSip implements IOnTopSip {
   /** The remote media stream. Undefined if call not answered. */
   get remoteMediaStream(): MediaStream | undefined {
     return this.session && this.sessionManager.getRemoteMediaStream(this.session);
-  }
-
-  /**
-   * The local audio track, if available.
-   * @deprecated Use localMediaStream and get track from the stream.
-   */
-  get localAudioTrack(): MediaStreamTrack | undefined {
-    return this.session && this.sessionManager.getLocalAudioTrack(this.session);
-  }
-
-  /**
-   * The local video track, if available.
-   * @deprecated Use localMediaStream and get track from the stream.
-   */
-  get localVideoTrack(): MediaStreamTrack | undefined {
-    return this.session && this.sessionManager.getLocalVideoTrack(this.session);
-  }
-
-  /**
-   * The remote audio track, if available.
-   * @deprecated Use remoteMediaStream and get track from the stream.
-   */
-  get remoteAudioTrack(): MediaStreamTrack | undefined {
-    return this.session && this.sessionManager.getRemoteAudioTrack(this.session);
-  }
-
-  /**
-   * The remote video track, if available.
-   * @deprecated Use remoteMediaStream and get track from the stream.
-   */
-  get remoteVideoTrack(): MediaStreamTrack | undefined {
-    return this.session && this.sessionManager.getRemoteVideoTrack(this.session);
   }
 
   /**
@@ -196,14 +166,10 @@ export class OnTopSip implements IOnTopSip {
     destination: string,
     inviterOptions?: InviterOptions,
     inviterInviteOptions?: InviterInviteOptions
-  ): Promise<void> {
+  ): Promise<Inviter> {
     this.logger.log(`[${this.id}] Beginning Session...`);
-    if (this.session) {
-      return Promise.reject(new Error('Session already exists.'));
-    }
-    return this.sessionManager.call(destination, inviterOptions, inviterInviteOptions).then(() => {
-      return;
-    });
+    this.muteAll();
+    return this.sessionManager.call(destination, inviterOptions, inviterInviteOptions);
   }
 
   /**
@@ -213,14 +179,9 @@ export class OnTopSip implements IOnTopSip {
    * Resolves when the request/response is sent, otherwise rejects.
    * Use `onCallHangup` delegate method to determine if and when call is ended.
    */
-  public hangup(): Promise<void> {
+  public hangup(session: Session): Promise<void> {
     this.logger.log(`[${this.id}] Hangup...`);
-    if (!this.session) {
-      return Promise.reject(new Error('Session does not exist.'));
-    }
-    return this.sessionManager.hangup(this.session).then(() => {
-      this.session = undefined;
-    });
+    return this.sessionManager.hangup(session);
   }
 
   /**
@@ -229,14 +190,17 @@ export class OnTopSip implements IOnTopSip {
    * Accept an incoming INVITE request creating a new Session.
    * Resolves with the response is sent, otherwise rejects.
    * Use `onCallAnswered` delegate method to determine if and when call is established.
+   * @param session
    * @param invitationAcceptOptions - Optional options for Inviter.accept().
    */
-  public answer(invitationAcceptOptions?: InvitationAcceptOptions): Promise<void> {
+  public answer(session: Session, invitationAcceptOptions?: InvitationAcceptOptions): Promise<void> {
     this.logger.log(`[${this.id}] Accepting Invitation...`);
-    if (!this.session) {
+
+    if (!session) {
       return Promise.reject(new Error('Session does not exist.'));
     }
-    return this.sessionManager.answer(this.session, invitationAcceptOptions);
+
+    return this.sessionManager.answer(session, invitationAcceptOptions);
   }
 
   /**
@@ -246,12 +210,14 @@ export class OnTopSip implements IOnTopSip {
    * Resolves with the response is sent, otherwise rejects.
    * Use `onCallHangup` delegate method to determine if and when call is ended.
    */
-  public decline(): Promise<void> {
+  public decline(session: Session): Promise<void> {
     this.logger.log(`[${this.id}] rejecting Invitation...`);
-    if (!this.session) {
+
+    if (!session) {
       return Promise.reject(new Error('Session does not exist.'));
     }
-    return this.sessionManager.decline(this.session);
+
+    return this.sessionManager.decline(session);
   }
 
   /**
@@ -262,12 +228,14 @@ export class OnTopSip implements IOnTopSip {
    * Use `onCallHold` delegate method to determine if request is accepted or rejected.
    * See: https://tools.ietf.org/html/rfc6337
    */
-  public hold(): Promise<void> {
+  public hold(session: Session): Promise<void> {
     this.logger.log(`[${this.id}] holding session...`);
-    if (!this.session) {
+
+    if (!session) {
       return Promise.reject(new Error('Session does not exist.'));
     }
-    return this.sessionManager.hold(this.session);
+
+    return this.sessionManager.hold(session);
   }
 
   /**
@@ -278,12 +246,14 @@ export class OnTopSip implements IOnTopSip {
    * Use `onCallHold` delegate method to determine if request is accepted or rejected.
    * See: https://tools.ietf.org/html/rfc6337
    */
-  public unhold(): Promise<void> {
+  public unhold(session: Session): Promise<void> {
     this.logger.log(`[${this.id}] unholding session...`);
-    if (!this.session) {
+
+    if (!session) {
       return Promise.reject(new Error('Session does not exist.'));
     }
-    return this.sessionManager.unhold(this.session);
+
+    return this.sessionManager.unhold(session);
   }
 
   /**
@@ -291,8 +261,8 @@ export class OnTopSip implements IOnTopSip {
    * @remarks
    * True if session is on hold.
    */
-  public isHeld(): boolean {
-    return this.session ? this.sessionManager.isHeld(this.session) : false;
+  public isHeld(session: Session): boolean {
+    return session ? this.sessionManager.isHeld(session) : false;
   }
 
   /**
@@ -300,9 +270,9 @@ export class OnTopSip implements IOnTopSip {
    * @remarks
    * Disable sender's media tracks.
    */
-  public mute(): void {
+  public mute(session: Session): void {
     this.logger.log(`[${this.id}] disabling media tracks...`);
-    return this.session && this.sessionManager.mute(this.session);
+    return session && this.sessionManager.mute(session);
   }
 
   /**
@@ -310,9 +280,9 @@ export class OnTopSip implements IOnTopSip {
    * @remarks
    * Enable sender's media tracks.
    */
-  public unmute(): void {
+  public unmute(session: Session): void {
     this.logger.log(`[${this.id}] enabling media tracks...`);
-    return this.session && this.sessionManager.unmute(this.session);
+    return session && this.sessionManager.unmute(session);
   }
 
   /**
@@ -320,22 +290,25 @@ export class OnTopSip implements IOnTopSip {
    * @remarks
    * True if sender's media track is disabled.
    */
-  public isMuted(): boolean {
-    return this.session ? this.sessionManager.isMuted(this.session) : false;
+  public isMuted(session: Session): boolean {
+    return session ? this.sessionManager.isMuted(session) : false;
   }
 
   /**
    * Send DTMF.
    * @remarks
    * Send an INFO request with content type application/dtmf-relay.
+   * @param session
    * @param tone - Tone to send.
    */
-  public sendDTMF(tone: string): Promise<void> {
+  public sendDTMF(session: Session, tone: string): Promise<void> {
     this.logger.log(`[${this.id}] sending DTMF...`);
-    if (!this.session) {
+
+    if (!session) {
       return Promise.reject(new Error('Session does not exist.'));
     }
-    return this.sessionManager.sendDTMF(this.session, tone);
+
+    return this.sessionManager.sendDTMF(session, tone);
   }
 
   /**
@@ -348,5 +321,38 @@ export class OnTopSip implements IOnTopSip {
   public message(destination: string, message: string): Promise<void> {
     this.logger.log(`[${this.id}] sending message...`);
     return this.sessionManager.message(destination, message);
+  }
+
+  /**
+   * Mute all sessions at once.
+   * Useful if the user hasn't manually muted before making a call.
+   */
+  public muteAll(): void {
+    const unmutedSessions = this.getSessions().filter(m => !m.held);
+
+    if (unmutedSessions.length) {
+      unmutedSessions.forEach(m => this.hold(m.session))
+    }
+  }
+
+  /**
+   * Return a session based on ID
+   * @param id
+   */
+  public getSession(id: string): Session | undefined {
+    const session = this.getSessions().find(m => m.session.id === id)
+
+    if (session) {
+      return session.session;
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Return all active sessions
+   */
+  public getSessions(): ManagedSession[] {
+    return this.sessionManager.managedSessions;
   }
 }

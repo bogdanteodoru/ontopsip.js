@@ -1,0 +1,94 @@
+<html>
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <script src="../dist/index.mjs" type="module"></script>
+  <link rel="stylesheet" href="demo.css">
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="mb-3">
+      Status:
+      <span class="badge text-bg-danger" id="statusDisconnected">Disconnected</span>
+      <span class="badge text-bg-success d-none" id="statusConnected">Connected</span>
+    </div>
+    <div class="accordion" id="settings">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#settingsOne" aria-expanded="true" aria-controls="settingsOne">
+            Settings
+          </button>
+        </h2>
+        <div id="settingsOne" class="accordion-collapse collapse show" data-bs-parent="#settings">
+          <div class="accordion-body">
+            <div class="mb-3">
+              <label for="domain" class="form-label">Domain</label>
+              <input type="text" class="form-control" id="domain">
+            </div>
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username">
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="text" class="form-control" id="password">
+            </div>
+            <div>
+              <button type="button" class="btn btn-primary" id="save">Save Config</button>
+              <button type="button" class="btn btn-success ms-2" id="connect">Connect</button>
+              <button type="button" class="btn btn-info d-none ms-2" id="retry">Retry</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="agentStatusWrapper" class="card mt-3 mb-3 d-none">
+      <div class="card-body">
+        <h5>Set a new agent status</h5>
+        <div class="mb-3">
+          <select name="agentStatus" id="agentStatus" class="form-control">
+            <option value="not-available" selected>Not Available</option>
+            <option value="available">Available</option>
+            <option value="active-call" disabled>Active Call</option>
+            <option value="wrap-up">Wrap Up</option>
+            <option value="disconnected" disabled>Disconnected</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion mt-3" id="calls">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#callsOne" aria-expanded="true" aria-controls="callsOne">
+            Active Calls
+          </button>
+        </h2>
+        <div id="callsOne" class="accordion-collapse collapse show" data-bs-parent="#calls">
+          <div class="accordion-body">
+            <div class="incoming-calls-wrapper"></div>
+            <div class="active-calls-wrapper"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="newCall" class="card mt-3">
+      <div class="card-body">
+        <h5>New Call</h5>
+        <div class="mb-3">
+          <label for="newCallUsername" class="form-label">Username</label>
+          <input type="text" class="form-control" id="newCallUsername" placeholder="sip:{username}@{domain}">
+        </div>
+        <div>
+          <button type="button" class="btn btn-success" id="call">Call</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <audio id="sipAudio" controls hidden></audio>
+  <script src="init.js" type="module"></script>
+</body>
+</html>

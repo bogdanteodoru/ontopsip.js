@@ -4,6 +4,10 @@ import { RegistererRegisterOptions } from 'sip.js/lib/api/registerer-register-op
 import { RegistererUnregisterOptions } from 'sip.js/lib/api/registerer-unregister-options.js';
 import { InviterOptions } from 'sip.js/lib/api/inviter-options.js';
 import { InviterInviteOptions } from 'sip.js/lib/api/inviter-invite-options.js';
+import { Inviter } from 'sip.js';
+import { SessionManager } from 'sip.js/lib/platform/web/session-manager/session-manager.js';
+import { Session } from 'sip.js/lib/api/session.js';
+import { ManagedSession } from 'sip.js/lib/platform/web/session-manager/managed-session';
 
 export interface IOnTopSip {
   delegate: OnTopSipDelegate | undefined;
@@ -13,14 +17,6 @@ export interface IOnTopSip {
   readonly localMediaStream: MediaStream | undefined;
 
   readonly remoteMediaStream: MediaStream | undefined;
-
-  readonly localAudioTrack: MediaStreamTrack | undefined;
-
-  readonly localVideoTrack: MediaStreamTrack | undefined;
-
-  readonly remoteAudioTrack: MediaStreamTrack | undefined;
-
-  readonly remoteVideoTrack: MediaStreamTrack | undefined;
 
   connect(): Promise<void>;
 
@@ -36,27 +32,33 @@ export interface IOnTopSip {
     destination: string,
     inviterOptions?: InviterOptions,
     inviterInviteOptions?: InviterInviteOptions
-  ): Promise<void>;
+  ): Promise<Inviter>;
 
-  hangup(): Promise<void>;
+  hangup(session: Session): Promise<void>;
 
-  answer(invitationAcceptOptions?: InvitationAcceptOptions): Promise<void>;
+  answer(session: Session, invitationAcceptOptions?: InvitationAcceptOptions): Promise<void>;
 
-  decline(): Promise<void>;
+  decline(session: Session): Promise<void>;
 
-  hold(): Promise<void>;
+  hold(session: Session): Promise<void>;
 
-  unhold(): Promise<void>;
+  unhold(session: Session): Promise<void>;
 
-  isHeld(): boolean;
+  isHeld(session: Session): boolean;
 
-  mute(): void;
+  mute(session: Session): void;
 
-  unmute(): void;
+  unmute(session: Session): void;
 
-  isMuted(): boolean;
+  isMuted(session: Session): boolean;
 
-  sendDTMF(tone: string): Promise<void>;
+  sendDTMF(session: Session, tone: string): Promise<void>;
 
   message(destination: string, message: string): Promise<void>;
+
+  getSession(id: string): Session | undefined;
+
+  getSessions(): ManagedSession[];
+
+  muteAll(): void;
 }

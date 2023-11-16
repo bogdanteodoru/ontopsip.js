@@ -2,7 +2,9 @@ node_modules
 .DS_Store
 .cache
 build
-dist
+/dist/*.d.ts
+/dist/lib/*.d.ts
+/package-lock.json
 docs
 .env
 screenshots/**

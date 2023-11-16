@@ -1,6 +1,6 @@
 {
 	"name": "ontopsip.js",
-	"version": "0.1.6",
+	"version": "0.2.0",
 	"description": "Small library on top sip.js with some new features",
 	"license": "MIT",
 	"repository": "https://github.com/bogdanteodoru/ontopsip.js",
@@ -14,17 +14,17 @@
 	"engines": {
 		"node": ">=9"
 	},
-  "nyc": {
-    "require": [
-      "ts-node/register"
-    ],
-    "extends": "@istanbuljs/nyc-config-typescript",
-    "all": true,
-    "check-coverage": true,
-    "include": [
-      "src/**/*.ts"
-    ]
-  },
+	"nyc": {
+		"require": [
+			"ts-node/register"
+		],
+		"extends": "@istanbuljs/nyc-config-typescript",
+		"all": true,
+		"check-coverage": true,
+		"include": [
+			"src/**/*.ts"
+		]
+	},
 	"scripts": {
 		"clean": "rm -fR dist/* build/*",
 		"build": "npm run clean && rollup -c",
@@ -36,9 +36,9 @@
 		"run-e2e-tests-in-docker": "docker-compose up --exit-code-from"
 	},
 	"files": [
-    "src",
-    "dist",
-    "README.md"
+		"src",
+		"dist",
+		"README.md"
 	],
 	"keywords": [
 		"sip.js",

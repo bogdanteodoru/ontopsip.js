@@ -65,6 +65,11 @@ export interface OnTopSipOptions {
   aor?: string;
 
   /**
+   * To stop or not everything before unloading the page
+   */
+  autoStop?: boolean;
+
+  /**
    * Delegate for OnTopSip.
    */
   delegate?: OnTopSipDelegate;

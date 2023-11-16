@@ -1,4 +1,5 @@
 import { Invitation } from 'sip.js';
+import { Session } from 'sip.js/lib/api/session.js';
 
 /**
  * Delegate for {@link OnTopSip}.
@@ -10,14 +11,14 @@ export interface OnTopSipDelegate {
    * @remarks
    * Callback for handling establishment of a new Session.
    */
-  onCallAnswered?(): void;
+  onCallAnswered?(session: Session): void;
 
   /**
    * Called when a call is created.
    * @remarks
    * Callback for handling the creation of a new Session.
    */
-  onCallCreated?(): void;
+  onCallCreated?(session: Session): void;
 
   /**
    * Called when a call is received.
