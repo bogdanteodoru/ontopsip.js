@@ -193,7 +193,10 @@ export class OnTopSip implements IOnTopSip {
    * @param session
    * @param invitationAcceptOptions - Optional options for Inviter.accept().
    */
-  public answer(session: Session, invitationAcceptOptions?: InvitationAcceptOptions): Promise<void> {
+  public answer(
+    session: Session,
+    invitationAcceptOptions?: InvitationAcceptOptions
+  ): Promise<void> {
     this.logger.log(`[${this.id}] Accepting Invitation...`);
 
     if (!session) {
@@ -331,7 +334,7 @@ export class OnTopSip implements IOnTopSip {
     const unmutedSessions = this.getSessions().filter(m => !m.held);
 
     if (unmutedSessions.length) {
-      unmutedSessions.forEach(m => this.hold(m.session))
+      unmutedSessions.forEach(m => this.hold(m.session));
     }
   }
 
@@ -340,7 +343,7 @@ export class OnTopSip implements IOnTopSip {
    * @param id
    */
   public getSession(id: string): Session | undefined {
-    const session = this.getSessions().find(m => m.session.id === id)
+    const session = this.getSessions().find(m => m.session.id === id);
 
     if (session) {
       return session.session;
