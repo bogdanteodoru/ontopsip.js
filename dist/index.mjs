@@ -18017,10 +18017,18 @@ class OnTopSip {
      * Send a MESSAGE request.
      * @param destination - The target destination for the message. A SIP address to send the MESSAGE to.
      * @param message
+     * @param requestDelegate
      */
-    message(destination, message) {
+    message(destination, message, requestDelegate) {
         this.logger.log(`[${this.id}] sending message...`);
-        return this.sessionManager.message(destination, message);
+        // return this.sessionManager.message(destination, message);
+        const target = UserAgent.makeURI(destination);
+        if (!target) {
+            return Promise.reject(new Error(`Failed to create a valid URI from "${destination}"`));
+        }
+        return new Messager(this.sessionManager.userAgent, target, message).message({
+            requestDelegate
+        });
     }
     /**
      * Mute all sessions at once.

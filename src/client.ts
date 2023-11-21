@@ -11,8 +11,10 @@ import { SessionManagerOptions } from 'sip.js/lib/platform/web/session-manager/s
 import { OnTopSipDelegate } from './client-delegate.js';
 import { OnTopSipClientOptions, OnTopSipOptions } from './client-options.js';
 import { IOnTopSip } from './types';
-import { Invitation, Inviter } from 'sip.js';
+import { Invitation, Inviter, Messager, MessagerOptions } from 'sip.js';
 import { ManagedSession } from 'sip.js/lib/platform/web/session-manager/managed-session';
+import { OutgoingRequestDelegate } from 'sip.js/lib/core';
+import { UserAgent } from 'sip.js';
 
 /**
  * A simple SIP class with some bits of extended functionality.
@@ -320,10 +322,25 @@ export class OnTopSip implements IOnTopSip {
    * Send a MESSAGE request.
    * @param destination - The target destination for the message. A SIP address to send the MESSAGE to.
    * @param message
+   * @param requestDelegate
    */
-  public message(destination: string, message: string): Promise<void> {
+  public message(
+    destination: string,
+    message: string,
+    requestDelegate?: OutgoingRequestDelegate
+  ): Promise<void> {
     this.logger.log(`[${this.id}] sending message...`);
-    return this.sessionManager.message(destination, message);
+    // return this.sessionManager.message(destination, message);
+
+    const target = UserAgent.makeURI(destination);
+
+    if (!target) {
+      return Promise.reject(new Error(`Failed to create a valid URI from "${destination}"`));
+    }
+
+    return new Messager(this.sessionManager.userAgent, target, message).message({
+      requestDelegate
+    });
   }
 
   /**
