@@ -18059,6 +18059,53 @@ class OnTopSip {
     }
 }
 
+const millisecond = 1;
+const second = 1000 * millisecond;
+const minute = 60 * second;
+const hour = 60 * minute;
+
+function createAudioContext() {
+    const cls = window.AudioContext || window.webkitAudioContext;
+    if (cls) {
+        return new cls();
+    }
+}
+const audioContext = createAudioContext();
+
+var ClientStatus;
+(function (ClientStatus) {
+    ClientStatus["CONNECTING"] = "connecting";
+    ClientStatus["CONNECTED"] = "connected";
+    ClientStatus["DYING"] = "dying";
+    ClientStatus["RECOVERING"] = "recovering";
+    ClientStatus["DISCONNECTING"] = "disconnecting";
+    ClientStatus["DISCONNECTED"] = "disconnected";
+})(ClientStatus || (ClientStatus = {}));
+var SessionStatus;
+(function (SessionStatus) {
+    SessionStatus["TRYING"] = "trying";
+    SessionStatus["RINGING"] = "ringing";
+    SessionStatus["ACTIVE"] = "active";
+    SessionStatus["ON_HOLD"] = "on_hold";
+    SessionStatus["TERMINATED"] = "terminated";
+})(SessionStatus || (SessionStatus = {}));
+var SubscriptionStatus;
+(function (SubscriptionStatus) {
+    SubscriptionStatus["AVAILABLE"] = "available";
+    SubscriptionStatus["TRYING"] = "trying";
+    SubscriptionStatus["PROCEEDING"] = "proceeding";
+    SubscriptionStatus["EARLY"] = "early";
+    SubscriptionStatus["RINGING"] = "ringing";
+    SubscriptionStatus["CONFIRMED"] = "confirmed";
+    SubscriptionStatus["BUSY"] = "busy";
+    SubscriptionStatus["TERMINATED"] = "terminated";
+})(SubscriptionStatus || (SubscriptionStatus = {}));
+var ReconnectionMode;
+(function (ReconnectionMode) {
+    ReconnectionMode[ReconnectionMode["ONCE"] = 0] = "ONCE";
+    ReconnectionMode[ReconnectionMode["BURST"] = 1] = "BURST";
+})(ReconnectionMode || (ReconnectionMode = {}));
+
 const mediaDevices = 'mediaDevices' in window.navigator;
 const webaudio = {
     mediaDevices,
@@ -18086,16 +18133,5 @@ function checkRequired() {
     return required.every(x => x);
 }
 
-var features = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    webaudio: webaudio,
-    webrtc: webrtc,
-    isSafari: isSafari,
-    isFirefox: isFirefox,
-    isChrome: isChrome,
-    isLocalhost: isLocalhost,
-    checkRequired: checkRequired
-});
-
-export { features as Features, OnTopSip };
+export { ClientStatus, OnTopSip, ReconnectionMode, SessionStatus, SubscriptionStatus, audioContext, checkRequired, hour, isChrome, isFirefox, isLocalhost, isSafari, millisecond, minute, second, webaudio, webrtc };
 //# sourceMappingURL=index.mjs.map
