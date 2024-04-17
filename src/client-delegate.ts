@@ -40,7 +40,7 @@ export interface OnTopSipDelegate {
    * @remarks
    * Callback for handling re-INVITE responses.
    */
-  onCallHold?(held: boolean): void;
+  onCallHold?(session: Session, held: boolean): void;
 
   /**
    * Called when a call receives an incoming DTMF tone.
