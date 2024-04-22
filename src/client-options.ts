@@ -1,6 +1,7 @@
 import { RegistererOptions } from 'sip.js/lib/api/registerer-options.js';
 import { UserAgentOptions } from 'sip.js/lib/api/user-agent-options.js';
 import { OnTopSipDelegate } from './client-delegate.js';
+import { SessionManagerOptions } from 'sip.js/lib/platform/web/session-manager/session-manager-options.js';
 
 /**
  * Media for {@link OnTopSipOptions}.
@@ -126,5 +127,5 @@ export interface OnTopSipOptions {
  */
 export interface OnTopSipClientOptions {
   wssURL: string;
-  options: OnTopSipOptions;
+  options: OnTopSipOptions | SessionManagerOptions;
 }
