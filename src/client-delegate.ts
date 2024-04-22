@@ -1,5 +1,6 @@
 import { Invitation } from 'sip.js';
 import { Session } from 'sip.js/lib/api/session.js';
+import { Message } from 'sip.js/lib/api/message.js';
 
 /**
  * Delegate for {@link OnTopSip}.
@@ -47,7 +48,7 @@ export interface OnTopSipDelegate {
    * @remarks
    * Callback for handling an incoming INFO request with content type application/dtmf-relay.
    */
-  onCallDTMFReceived?(tone: string, duration: number): void;
+  onCallDTMFReceived?(session: Session, tone: string, duration: number): void;
 
   /**
    * Called upon receiving a message.
@@ -55,7 +56,7 @@ export interface OnTopSipDelegate {
    * Callback for handling incoming MESSAGE requests.
    * @param message - The message received.
    */
-  onMessageReceived?(message: string): void;
+  onMessageReceived?(message: Message): void;
 
   /**
    * Called when user is registered to received calls.

@@ -56,7 +56,7 @@ export interface OnTopSipMediaRemote {
   video?: HTMLVideoElement;
 }
 
-export interface OnTopSipOptions {
+export interface OnTopSipOptions extends SessionManagerOptions {
   /**
    * User's SIP Address of Record (AOR).
    * @remarks
@@ -127,5 +127,5 @@ export interface OnTopSipOptions {
  */
 export interface OnTopSipClientOptions {
   wssURL: string;
-  options: OnTopSipOptions | SessionManagerOptions;
+  options: OnTopSipOptions;
 }
