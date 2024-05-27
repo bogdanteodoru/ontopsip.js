@@ -8,6 +8,7 @@ import { Inviter } from 'sip.js';
 import { Session } from 'sip.js/lib/api/session.js';
 import { ManagedSession } from 'sip.js/lib/platform/web/session-manager/managed-session';
 import { OutgoingRequestDelegate } from 'sip.js/lib/core';
+import { SessionManager } from 'sip.js/lib/platform/web/session-manager/session-manager.js';
 
 export interface IOnTopSip {
   delegate: OnTopSipDelegate | undefined;
@@ -63,6 +64,8 @@ export interface IOnTopSip {
   getSession(id: string): Session | undefined;
 
   getSessions(): ManagedSession[];
+
+  getSessionManager(): SessionManager;
 
   muteAll(): void;
 }
