@@ -374,4 +374,8 @@ export class OnTopSip implements IOnTopSip {
   public getSessions(): ManagedSession[] {
     return this.sessionManager.managedSessions;
   }
+
+  public getSessionManager(): SessionManager {
+    return this.sessionManager;
+  }
 }
